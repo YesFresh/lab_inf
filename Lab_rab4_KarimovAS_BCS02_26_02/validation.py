@@ -1,23 +1,22 @@
+        # Валидация
 from __future__ import annotations
 
 from connstans import M_MAX, M_MIN, T1_MAX, T1_MIN, T2_MAX, T2_MIN
 from logger import log_error
 
+
 def validate_range(value: float, low: float, high: float):
-    """
-    Проверка попадания value в [low, high] через if-elif-else.
-    :return: (True, "") или (False, сообщение)
-    """
-    if value < low: return False, f"Ошибка: значение меньше нижней границы ({low})."
-    elif value > high: return False, f"Ошибка: значение больше верхней границы ({high})."
-    else: return True, ""
+    if value < low:
+        return False, f"Ошибка: значение меньше нижней границы ({low})."
+    elif value > high:
+        return False, f"Ошибка: значение больше верхней границы ({high})."
+    else:
+        return True, ""
 
 
-def input_number(prompt: str, low: float, high: float) -> float:
-    """
-    Циклически запрашивать число, пока не будет корректного.
-    Проверяет тип (float) через try/except ValueError и границы.
-    """
+def input_number(prompt: str, low: float, high: float,
+                 greater_than: float | None = None):        #проверка на число 
+
     while True:
         raw = input(prompt).strip()
         try:
@@ -30,37 +29,31 @@ def input_number(prompt: str, low: float, high: float) -> float:
             continue
 
         ok, msg = validate_range(value, low, high)
-        if ok:
-            return value
-        print(msg + " Повторите ввод.")
-        log_error(msg)
+        if not ok:
+            print(msg + " Повторите ввод.")
+            log_error(msg)
+            continue
+
+        if greater_than is not None and not value > greater_than:
+            msg = (f"Ошибка: значение ({value}) должно быть строго больше "
+                   f"начальной температуры t1 ({greater_than}).")
+            print(msg + " Повторите ввод.")
+            log_error(msg)
+            continue
+        return value
 
 
-def input_mass():
+def input_mass():   # Ввод массы 
+    return input_number("Введите массу m, кг (0.1..1000): ", M_MIN, M_MAX)
+
+
+
+def input_temp1():  # Ввод начальной температуры t1
+    return input_number("Введите начальную температуру t1, °C (-50..100): ",
+                        T1_MIN, T1_MAX)
+
+def input_temp2(t1: float):     #Ввод конечной температуры t2 с проверкой на t2 > t1
     return input_number(
-        "Введите массу (от 01 до 1000): ",
-        M_MIN, M_MAX,
+        f"Введите конечную температуру t2, °C (0..1000, t2 > {t1}): ",
+        T2_MIN, T2_MAX, greater_than=t1,
     )
-
-
-def input_temp1():
-    return input_number(
-        "Введите Т1 (-50 до 100)",
-        T1_MIN, T1_MAX,
-    )
-
-def input_temp2():
-    return input_number(
-        "Введите Т2 (0 до 1000)",
-        T2_MIN, T2_MAX,
-    )
-
-def input_deT():
-    while True:
-        t1 = input_temp1()
-        t2 = input_temp2()
-        if t2 > t1:
-            return t1, t2
-        msg = f"Ошибка: Температура T2 ({t2}) должна быть строго больше Т1 ({t1})."
-        print(msg + " Повторите ввод температур.")
-        log_error(msg)

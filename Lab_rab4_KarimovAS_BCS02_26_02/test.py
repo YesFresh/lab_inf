@@ -22,7 +22,7 @@ while True:
             continue
         break
     except ValueError:
-        print("m - Не число")
+        print("m - не число")
 
 while True:
     t1 = input("Введите 1 температуру (от -50 до 100 ):")

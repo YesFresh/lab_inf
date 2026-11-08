@@ -1,4 +1,4 @@
-#Хранит сообщения в памяти (для отчёта/анализа) и дублирует в файл.
+#Хранит сообщения об ошибках в памяти (для отчёта/анализа) и дублирует в файл.#
 from __future__ import annotations
 import datetime
 from connstans import LOG_FILE
@@ -6,8 +6,8 @@ from connstans import LOG_FILE
 _entries: list[str] = []
 
 
-def log_error(message: str) -> None:
-    "Записать собщение по ошибке ввода."
+def log_error(message: str):
+    #Записать сообщение об ошибке ввода
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     entry = f"[{ts}] {message}"
     _entries.append(entry)
@@ -18,11 +18,11 @@ def log_error(message: str) -> None:
         pass
 
 
-def get_entries() -> list[str]:
-    "Вернуть копию журнала ошибок."
+def get_entries():
+    #Вернуть копию журнала ошибок.#
     return list(_entries)
 
 
-def clear() -> None:
-    "Очистить журнал (используется в тестах)."
+def clear():
+    #Очистить журнал (используется в тестах).#
     _entries.clear()
