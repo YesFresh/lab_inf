@@ -44,9 +44,9 @@ def exponential_moving_average(data: Sequence[float], alpha: float) -> list[floa
         result.append(float(alpha * value + (1 - alpha) * result[-1]))
     return result
 
-def simple_moving_average_deque(data: Sequence[float], window: int) -> List[float]: 
-    """SMA с использованием deque (двусторонней очереди).""" 
-    check_window(window, len(data)) 
+def simple_moving_average_deque(data: Sequence[float], window: int) -> List[float]:
+    """SMA с использованием deque (двусторонней очереди)."""
+    _check_window(data, window)
     result = [] 
     d = deque() 
     running_sum = 0.0 
@@ -59,15 +59,8 @@ def simple_moving_average_deque(data: Sequence[float], window: int) -> List[floa
             result.append(running_sum / window) 
     return result
 
-def benchmark_moving_average(data: Sequence[float], window: int, repeats: int = 1000) -> dict: 
-    
-    """ 
-    Замеряет среднее время выполнения SMA для реализаций на list и deque. 
-    Возвращает словарь с ключами 'list' и 'deque' (время в секундах). 
-    """ 
-
-    # Проверка корректности окна (выбросит ValueError при необходимости) 
-    check_window(window, len(data)) 
+def benchmark_moving_average(data: Sequence[float], window: int, repeats: int = 1000) -> dict:
+    _check_window(data, window)
 
     # Замер для list-реализации (существующая simple_moving_average) 
     t0 = time.perf_counter() 

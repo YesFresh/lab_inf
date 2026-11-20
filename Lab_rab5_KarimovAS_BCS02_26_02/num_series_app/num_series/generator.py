@@ -19,6 +19,17 @@ def random_series(n: int, low: float = -100.0, high: float = 100.0,
     rng = random.Random(seed)
     return [rng.uniform(low, high) for _ in range(n)]
 
+"""     3 вариант x[i] = sin(0.1 * i) + U(-noise, noise).       """
+def analytic_series(n: int, noise: float = 0.1, seed: Optional[int] = None) -> list[float]:
+    _validate_n(n)
+    if not math.isfinite(noise) or noise < 0:
+        raise ValueError("noise должен быть конечным неотрицательным числом")
+    rng = random.Random(seed)
+    return [
+        math.sin(0.1 * i) + (rng.uniform(-noise, noise) if noise else 0.0)
+        for i in range(n)
+    ]
+
 
 def sine_series(n: int, amplitude: float = 1.0, frequency: float = 1.0,
                 noise: float = 0.0, seed: Optional[int] = None) -> list[float]:

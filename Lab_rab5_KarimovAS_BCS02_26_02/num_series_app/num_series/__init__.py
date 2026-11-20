@@ -1,6 +1,6 @@
 """Пакет алгоритмической обработки числовых рядов.""" 
 
-from .generator import random_series, sine_series, trend_series 
+from .generator import random_series, sine_series, trend_series , analytic_series
 
 from .stats import mean, median, spread, summarize 
 
@@ -31,5 +31,6 @@ __all__ = [
     "centered_moving_average", 
     "exponential_moving_average", 
     "benchmark_moving_average", 
+    "analytic_series", "abs_spread", " minmax_indices",
 ] 
 __version__ = "1.1.0"

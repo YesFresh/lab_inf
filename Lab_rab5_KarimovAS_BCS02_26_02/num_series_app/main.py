@@ -23,7 +23,7 @@ from num_series import (
     random_series, sine_series, trend_series, 
     summarize, 
     simple_moving_average, centered_moving_average, exponential_moving_average, 
-    save_series_json, load_series_auto, benchmark_moving_average,
+    save_series_json, load_series_auto, benchmark_moving_average, analytic_series
     ) 
 
 # --------------------------------------------------------------------------- 
@@ -38,6 +38,8 @@ def build_series(kind: str, n: int, seed: int) -> List[float]:
         return sine_series(n, amplitude=10, frequency=2, noise=1.5, seed=seed) 
     if kind == "trend": 
         return trend_series(n, start=0, step=1.0, noise=0.5, seed=seed) 
+    if kind == "analytic":
+        return analytic_series(n, noise=0.1, seed=seed)
     raise ValueError(f"Неизвестный тип ряда: {kind!r}") 
 
 def obtain_series(args: argparse.Namespace) -> Tuple[List[float], str]: 
@@ -81,6 +83,9 @@ def print_stats(stats: dict) -> None:
     print(f"Медиана : {stats['median']:>10.4f}") 
     print(f"Размах (max - min) : {stats['spread']:>10.4f}") 
     print(f"min / max : {stats['min']:>10.4f} / {stats['max']:.4f}") 
+    print(f"|max - min|            : {stats['abs_spread']:>10.4f}")
+    print(f"Индекс min / max       : {stats['min_index']} / {stats['max_index']}")
+
 
 
 
@@ -98,15 +103,15 @@ def build_parser() -> argparse.ArgumentParser:
         epilog="Пример: python main.py --kind sine --n 20 --save data/s.json", 
     ) 
     # источники 
-    parser.add_argument("--kind", choices=["random", "sine", "trend"], default="sine", help="тип генерируемого ряда") 
-    parser.add_argument("--n", type=int, default=20, help="количество точек в ряде") 
+    parser.add_argument("--kind", choices=["random", "sine", "trend", "analytic"], default="analytic", help="тип генерируемого ряда")
+    parser.add_argument("--n", type=int, default=1000, help="количество точек в ряде")
     parser.add_argument("--seed", type=int, default=42, help="зерно ГПСЧ для воспроизводимости") 
     parser.add_argument("--load", metavar="PATH", help="загрузить ряд из файла (.json/.txt/.csv); " "отменяет --kind/--n/--seed") 
     # экспорт 
     parser.add_argument("--save", metavar="PATH", help="сохранить ряд в JSON-файл") 
     parser.add_argument("--export", metavar="FILE", help="экспортировать ряд в CSV (i, value)") 
     # анализ 
-    parser.add_argument("--window", type=int, default=3, help="размер окна для скользящей средней") 
+    parser.add_argument("--window", type=int, default=10, help="размер окна для скользящей средней")
     parser.add_argument("--alpha", type=float, default=0.3, help="коэффициент сглаживания для EMA, 0 < alpha <= 1") 
     parser.add_argument("--benchmark", action="store_true", help="замерить время выполнения SMA для list и deque", )
     return parser 
