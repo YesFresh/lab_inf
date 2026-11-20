@@ -1,36 +1,36 @@
-from typing import Dict, Sequence
+"""Ручной расчёт базовых статистических показателей."""
+from typing import Sequence
+
 
 def _ensure_not_empty(data: Sequence[float]) -> None:
-    if not data:
+    if len(data) == 0:
         raise ValueError("Ряд пуст: расчёт статистики невозможен")
 
-"""Среднее арифметическое."""
+
 def mean(data: Sequence[float]) -> float:
+    """Среднее арифметическое."""
     _ensure_not_empty(data)
-    return sum(data) / len(data)
+    return float(sum(data) / len(data))
 
-"""Медиана (устойчива к выбросам)."""
+
 def median(data: Sequence[float]) -> float:
+    """Медиана упорядоченного ряда."""
     _ensure_not_empty(data)
-    s = sorted(data)
-    k = len(s) // 2
-    if len(s) % 2:
-        return float(s[k])
-    return (s[k - 1] + s[k]) / 2.0
+    values = sorted(data)
+    middle = len(values) // 2
+    if len(values) % 2:
+        return float(values[middle])
+    return float((values[middle - 1] + values[middle]) / 2.0)
 
-"""Размах ряда: max - min."""
+
 def spread(data: Sequence[float]) -> float:
+    """Размах ряда: максимум минус минимум."""
     _ensure_not_empty(data)
     return float(max(data) - min(data))
 
-"""Сводный отчёт: count, mean, median, spread, min, max."""
-def summarize(data: Sequence[float]) -> Dict[str, float]:
+
+def summarize(data: Sequence[float]) -> dict[str, float]:
+    """Сводка: количество значений, среднее, медиана, размах, min и max."""
     _ensure_not_empty(data)
-    return {
-    "count": len(data),
-    "mean": mean(data),
-    "median": median(data),
-    "spread": spread(data),
-    "min": float(min(data)),
-    "max": float(max(data)),
-    }
+    return {"count": len(data), "mean": mean(data), "median": median(data),
+            "spread": spread(data), "min": float(min(data)), "max": float(max(data))}
